@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2024</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #0d1b2a, #1b263b, #415a77);
+            overflow: hidden;
+            font-family: 'Cursive', sans-serif;
+            color: white;
+        }
+
+        h1 {
+            position: absolute;
+            top: 20%;
+            width: 100%;
+            text-align: center;
+            font-size: 5rem;
+            color: #ffcc00;
+            text-shadow: 0 0 30px #ffcc00, 0 0 60px #ffa500, 0 0 90px #ff7800;
+            animation: glow 2s infinite ease-in-out;
+            z-index: 10;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px #ffd700, 0 0 40px #ffa500, 0 0 60px #ff7800;
+            }
+            50% {
+                text-shadow: 0 0 30px #ffdd00, 0 0 70px #ffaa33, 0 0 100px #ff9955;
+            }
+        }
+
+        p {
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            text-align: center;
+            font-size: 1.8rem;
+            color: #ffffff;
+            text-shadow: 0 0 15px #ffffff;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        audio {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 15;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎆 Happy New Year 2024! 🎇</h1>
+    <p>Wishing you a year filled with love, success, and happiness!</p>
+    <canvas id="fireworks"></canvas>
+    <audio controls autoplay loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-dreams.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const canvas = document.getElementById("fireworks");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+        const maxParticles = 100;
+
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.exploded = false;
+                this.color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            }
+
+            explode() {
+                for (let i = 0; i < maxParticles; i++) {
+                    particles.push(new Particle(this.x, this.y, this.color));
+                }
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * 6 - 3;
+                this.gravity = 0.05;
+                this.alpha = 1;
+                this.fade = Math.random() * 0.03 + 0.01;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY + this.gravity;
+                this.alpha -= this.fade;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        function drawFireworks() {
+            if (Math.random() < 0.05) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height * 0.7;
+                const firework = new Firework(x, y);
+                firework.explode();
+            }
+
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            drawFireworks();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
